@@ -1,0 +1,23 @@
+initializing state...
+state initialized!
+
+initializing kalendar...
+game initialized!
+
+initializing texture from default location "./res/default.png"
+texture initialized!
+
+added texture at location "./res/arrowButton.png" in textures vector[0]: "./res/arrowButton.png"
+
+destructing game: kalendar...
+destructing texture from: ./res/arrowButton.png
+texture destructed!
+
+destructing state...
+state destructed!
+
+game destructed!
+
+destructing state...
+state destructed!
+

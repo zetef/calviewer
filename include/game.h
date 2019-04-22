@@ -23,17 +23,21 @@ class game_t{
         
         bool init();
         bool loadMedia();
-        void render(texture_t texture, int x, int y, SDL_Rect* clip = NULL);
+        void render(texture_t* texture, int x, int y, SDL_Rect* clip = NULL);
         
-        texture_t getTexture(unsigned int i);
-        void addTexture(texture_t texture);
-        void removeTexture(texture_t texture);
+        unsigned int getThroughTexturesUntil(std::string path);
+        texture_t* getTexture(std::string path);
+        void showTextures();
+        void addTexture(texture_t* texture);
+        void removeTexture(texture_t* texture);
         
     private:
         std::string name;
         SDL_Window* window;
         SDL_Renderer* renderer;
-        std::vector<texture_t> textures;
+        std::vector<texture_t*> textures;
         
+        unsigned int getThroughTexturesUntil(texture_t* texture);
+        texture_t* getTexture(texture_t* texture);
         void free();
 };

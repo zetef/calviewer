@@ -1,15 +1,18 @@
 #include "../include/texture.h"
 
 texture_t::texture_t(){
+    printf("initializing texture from default location \"./res/default.png\"\n");
 	mTexture = NULL;
-    location = "./default.png";
+    location = "./res/default.png";
 	width = 0;
 	height = 0;
+    printf("texture initialized!\n\n");
 }
 
 texture_t::~texture_t(){
 	printf("destructing texture from: %s\n", location.c_str());
     free();
+    printf("texture destructed!\n\n");
 }
 
 bool texture_t::loadFromFile(std::string path, SDL_Renderer* renderer){
@@ -22,11 +25,11 @@ bool texture_t::loadFromFile(std::string path, SDL_Renderer* renderer){
 	if(loadedSurface == NULL){
 		printf("Unable to load image %s! SDL_image Error: %s\n", path.c_str(), IMG_GetError());
 	} else {
-		SDL_SetColorKey(loadedSurface, SDL_TRUE, SDL_MapRGB(loadedSurface->format, 0, 0xFF, 0xFF));
+		SDL_SetColorKey(loadedSurface, SDL_TRUE, SDL_MapRGB(loadedSurface->format, 0x00, 0xff, 0x00));
 
         newTexture = SDL_CreateTextureFromSurface(renderer, loadedSurface);
 		if(newTexture == NULL){
-			printf("Unable to create texture from %s! SDL Error: %s\n", path.c_str(), SDL_GetError());
+			printf("Unable to create texture from %s! SDL Error: %s\n\n", path.c_str(), SDL_GetError());
 		} else {
 			width = loadedSurface->w;
 			height = loadedSurface->h;

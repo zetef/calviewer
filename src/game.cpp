@@ -1,15 +1,17 @@
 #include "../include/game.h"
 
 game_t::game_t(std::string title){
+    printf("initializing %s...\n", title.c_str());
     window = NULL;
     renderer = NULL;
     name = title;
-    state.init();
+    printf("game initialized!\n\n");
 }
 
 game_t::~game_t(){
-    printf("destructing game: %s\n", name.c_str());
+    printf("destructing game: %s...\n", name.c_str());
     free();
+    printf("game destructed!\n\n");
 }
 
 std::string game_t::getName(){
@@ -45,8 +47,11 @@ bool game_t::init(){
 
 				int imgFlags = IMG_INIT_PNG;
 				if(!( IMG_Init(imgFlags) & imgFlags)){
-					printf("could not initialize SDL_image! error: %s\n", IMG_GetError());
+					printf("could not initialize SDL_image! error: %s\n\n", IMG_GetError());
 					success = false;
+                } else {
+                    state.init();
+                    
                 }
 			}
 		}
@@ -58,10 +63,10 @@ bool game_t::init(){
 bool game_t::loadMedia(){
     bool success = true;
 
-    texture_t arrowButton;
+    texture_t* arrowButton = new texture_t();
     
-	if(!arrowButton.loadFromFile("./res/arrowButton.png", renderer)){
-        printf("failed to load image %s\n", arrowButton.getLocation().c_str());
+	if(!arrowButton->loadFromFile("./res/arrowButton.png", renderer)){
+        printf("failed to load image \"%s\"\n\n", arrowButton->getLocation().c_str());
         success = false;
     } else {
         addTexture(arrowButton);
@@ -70,46 +75,66 @@ bool game_t::loadMedia(){
 	return success;
 }
 
-texture_t game_t::getTexture(unsigned int i){
+void game_t::showTextures(){
+    for(unsigned int i = 0; i < textures.size(); i++){
+        printf("[%d]: \"%s\"\n", i, textures[i]->getLocation().c_str());
+    }
+    printf("\n");
+}
+
+texture_t* game_t::getTexture(texture_t* texture){
+    unsigned int i = getThroughTexturesUntil(texture);
     return textures[i];
 }
 
-void game_t::addTexture(texture_t texture){
+void game_t::addTexture(texture_t* texture){
     textures.push_back(texture);
+    printf("added texture at location \"%s\" in textures vector", texture->getLocation().c_str());
 }
 
-void game_t::removeTexture(texture_t texture){ //TODO implement a map container
-    std::string path = texture.getLocation();
-    unsigned int i = 0;
-    while(textures[i].getLocation() != path){
-        i++;
-        if(i > textures.size()){
-            printf("could not find texture at %s in textures vector\n", path.c_str());
-            return;
-        }
-    }
-        
+void game_t::removeTexture(texture_t* texture){ 
+    unsigned int i = getThroughTexturesUntil(texture);
     textures.erase(textures.begin() + i);
 }
 
-void game_t::render(texture_t texture, int x, int y, SDL_Rect* clip){
-    std::string path = texture.getLocation();
+void game_t::render(texture_t* texture, int x, int y, SDL_Rect* clip){
+    unsigned int i = getThroughTexturesUntil(texture);
+    textures[i]->render(x, y, renderer, clip);
+}
+
+unsigned int game_t::getThroughTexturesUntil(texture_t* texture){ //TODO implement a map container
+    std::string path = texture->getLocation();
     unsigned int i = 0;
-    while(textures[i].getLocation() != path){
+    while(textures[i]->getLocation() != path){
         i++;
         if(i > textures.size()){
-            printf("could not find texture at %s in textures vector\n", path.c_str());
-            return;
+            printf("could not find texture at \"%s\" in textures vector\n\n", path.c_str());
+            return -1;
         }
     }
-    
-    textures[i].render(x, y, renderer, clip);
+    return i;
+}
+
+unsigned int game_t::getThroughTexturesUntil(std::string path){
+    unsigned int i = 0;
+    while(textures[i]->getLocation() != path){
+        i++;
+        if(i > textures.size()){
+            printf("could not find texture at \"%s\" in textures vector\n\n", path.c_str());
+            return -1;
+        }
+    }
+    return i;
+}
+
+texture_t* game_t::getTexture(std::string path){
+    return textures[getThroughTexturesUntil(path)];
 }
 
 void game_t::free(){
     //textures
     for(unsigned int i = 0; i < textures.size(); i++){
-        textures[i].~texture_t();
+        delete textures[i];
         removeTexture(textures[i]);
     }
     

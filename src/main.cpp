@@ -7,10 +7,11 @@
 
 int main(int argc, char* argv[])
 {
+
 #if DEBUG
     freopen("error.out", "w", stdout);
 #endif
-    
+
     game_t* game = new game_t("kalendar");
     
     if(!game->init()){
@@ -19,13 +20,15 @@ int main(int argc, char* argv[])
         if(!game->loadMedia()){
             printf("failed to load media. error: %s\n", SDL_GetError());
         } else {
+            game->showTextures();
+            
             while(!game->state.quit){
                 game->state.handle();
                 
-                SDL_SetRenderDrawColor(game->getRenderer(), 0x00, 0xFF, 0xFF, 0xFF);
+                SDL_SetRenderDrawColor(game->getRenderer(), 0xff, 0xff, 0xff, 0xff);
                 SDL_RenderClear(game->getRenderer());
                 
-                game->render(game->getTexture(0), 0, 0, NULL);
+                game->render(game->getTexture("./res/arrowButton.png"), 0, 0, NULL);
                 
                 SDL_RenderPresent(game->getRenderer());
             }
