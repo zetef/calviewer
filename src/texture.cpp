@@ -1,21 +1,17 @@
 #include "../include/texture.h"
 
 texture_t::texture_t(){
-    printf("initializing texture from default location \"./res/default.png\"\n");
 	mTexture = NULL;
-    location = "./res/default.png";
+    location = "./";
 	width = 0;
 	height = 0;
-    printf("texture initialized!\n\n");
 }
 
 texture_t::~texture_t(){
-	printf("destructing texture from: %s\n", location.c_str());
     free();
-    printf("texture destructed!\n\n");
 }
 
-bool texture_t::loadFromFile(std::string path, SDL_Renderer* renderer){
+bool texture_t::loadFromFile(SDL_Renderer* renderer, std::string path){
 	free();
     location = path;
 
@@ -29,7 +25,7 @@ bool texture_t::loadFromFile(std::string path, SDL_Renderer* renderer){
 
         newTexture = SDL_CreateTextureFromSurface(renderer, loadedSurface);
 		if(newTexture == NULL){
-			printf("Unable to create texture from %s! SDL Error: %s\n\n", path.c_str(), SDL_GetError());
+			printf("Unable to create texture from %s! SDL Error: %s\n", path.c_str(), SDL_GetError());
 		} else {
 			width = loadedSurface->w;
 			height = loadedSurface->h;
@@ -43,14 +39,29 @@ bool texture_t::loadFromFile(std::string path, SDL_Renderer* renderer){
     
 }
 
-void texture_t::free(){
-    if(mTexture != NULL){
-		SDL_DestroyTexture(mTexture);
-		mTexture = NULL;
-		width = 0;
-		height = 0;
+#ifdef _SDL_TTF_H
+bool texture_t::loadFromRenderedText(std::string textureText, SDL_Color textColor, TTF_Font* font, SDL_Renderer* renderer){
+    free();
+
+	SDL_Surface* textSurface = TTF_RenderText_Solid(font, textureText.c_str(), textColor);
+	if(textSurface != NULL){
+		mTexture = SDL_CreateTextureFromSurface(renderer, textSurface);
+		if(mTexture == NULL){
+			printf("could not create texture from rendered text! error: %s\n", SDL_GetError());
+		} else {
+			width = textSurface->w;
+			height = textSurface->h;
+		}
+
+		SDL_FreeSurface(textSurface);
+	} else {
+		printf("could not render text surface! error: %s\n", TTF_GetError());
 	}
+
+	return mTexture != NULL;
 }
+
+#endif
 
 void texture_t::setColor(Uint8 red, Uint8 green, Uint8 blue){
 	SDL_SetTextureColorMod(mTexture, red, green, blue);
@@ -64,7 +75,7 @@ void texture_t::setAlpha(Uint8 alpha){
 	SDL_SetTextureAlphaMod(mTexture, alpha);
 }
 
-void texture_t::render(int x, int y, SDL_Renderer* renderer, SDL_Rect* clip){
+void texture_t::render(SDL_Renderer* renderer, int x, int y, SDL_Rect* clip, double angle, SDL_Point* center, SDL_RendererFlip flip){
 	SDL_Rect renderQuad = { x, y, width, height };
 
 	if(clip != NULL){
@@ -72,7 +83,7 @@ void texture_t::render(int x, int y, SDL_Renderer* renderer, SDL_Rect* clip){
 		renderQuad.h = clip->h;
 	}
 
-	SDL_RenderCopy(renderer, mTexture, clip, &renderQuad);
+	SDL_RenderCopyEx(renderer, mTexture, clip, &renderQuad, angle, center, flip);
 }
 
 int texture_t::getWidth(){
@@ -83,6 +94,19 @@ int texture_t::getHeight(){
     return height;
 }
 
+void texture_t::setLocation(std::string path){
+    location = path;
+}
+
 std::string texture_t::getLocation(){
     return location;
+}
+
+void texture_t::free(){
+    if(mTexture != NULL){
+		SDL_DestroyTexture(mTexture);
+		mTexture = NULL;
+		width = 0;
+		height = 0;
+	}
 }

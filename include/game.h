@@ -2,10 +2,13 @@
 
 #include <SDL.h>
 #include <SDL_image.h>
+#include <SDL_ttf.h>
 #include <stdio.h>
 #include <iostream>
+#include <fstream>
 #include <string>
 #include <vector>
+#include <map>
 
 #include "constants.h"
 #include "texture.h"
@@ -16,28 +19,24 @@ class game_t{
         game_t(std::string title);
         ~game_t();
         
-        state_t state;
-        
-        std::string getName();
-        SDL_Renderer* getRenderer();
-        
-        bool init();
-        bool loadMedia();
-        void render(texture_t* texture, int x, int y, SDL_Rect* clip = NULL);
-        
-        unsigned int getThroughTexturesUntil(std::string path);
-        texture_t* getTexture(std::string path);
-        void showTextures();
-        void addTexture(texture_t* texture);
-        void removeTexture(texture_t* texture);
-        
-    private:
         std::string name;
         SDL_Window* window;
         SDL_Renderer* renderer;
-        std::vector<texture_t*> textures;
+        TTF_Font* font;
+        state_t state;
+        std::map<std::string, texture_t> textures;
         
-        unsigned int getThroughTexturesUntil(texture_t* texture);
-        texture_t* getTexture(texture_t* texture);
+        bool init();
+        bool loadMedia();
+        void render(texture_t texture, int x, int y, SDL_Rect* clip = NULL, double angle = 0.0f, SDL_Point* center = NULL, SDL_RendererFlip flip = SDL_FLIP_NONE);
+        
+        
+        void showTextures();
+        texture_t getTexture(std::string path);
+        texture_t getTexture(texture_t texture);
+        void addTexture(texture_t texture);
+        void removeTexture(texture_t texture);
+        
+    private:
         void free();
 };

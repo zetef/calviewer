@@ -11,8 +11,5 @@ class state_t{
         void handle();
         SDL_Event event;
         bool quit;
-        
-    private:
-        
         void free();
 };

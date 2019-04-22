@@ -1,15 +1,11 @@
 #include "../include/state.h"
 
 state_t::state_t(){
-    printf("initializing state...\n");
     init();
-    printf("state initialized!\n\n");
 }
 
 state_t::~state_t(){
-    printf("destructing state...\n");
     free();
-    printf("state destructed!\n\n");
 }
 
 void state_t::init(){
