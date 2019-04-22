@@ -1,4 +1,0 @@
-in map textures:
-	[FPSText] : location : "FPSText" | width : 0 | height : 0
-	[arrowButton] : location : "res/arrowButton.png" | width : 46 | height : 46
-	[default] : location : "res/default.png" | width : 128 | height : 128

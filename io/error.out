@@ -1,0 +1,2 @@
+in map textures:
+	[FPSText] : location : "FPSText" | width : 0 | height : 0

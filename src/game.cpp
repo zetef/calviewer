@@ -3,7 +3,6 @@
 game_t::game_t(std::string title){
     window = NULL;
     renderer = NULL;
-    font = NULL;
     name = title;
 }
 
@@ -54,75 +53,7 @@ bool game_t::init(){
 	return success;
 }
 
-bool game_t::loadMedia(){
-    bool success = true;
-    
-    //reading from file the textures that need to load
-    std::string location, key;
-    texture_t ex;
-    std::ifstream f("./textures.in");
-    while(f >> location >> key){
-        if(location != key){
-            if(!ex.loadFromFile(renderer, location)){
-                printf("failed to load image \"%s\"\n\n", ex.getLocation().c_str());
-                success = false;
-            }
-        }
-        textures[key] = ex;
-        if(location == key) textures[key].setLocation(key);
-        ex.free();
-    }
-    
-    font = TTF_OpenFont("./res/lazy.ttf", 28);
-    if(font == NULL){
-        printf("failed to load font from file \"%s\". error: %s\n", "./res/lazy.ttf", TTF_GetError());
-        success = false;
-    }
-	
-	return success;
-}
-
-void game_t::render(texture_t texture, int x, int y, SDL_Rect* clip, double angle, SDL_Point* center, SDL_RendererFlip flip){
-    textures[texture.getLocation()].render(renderer, x, y, clip, angle, center, flip);
-}
-
-void game_t::showTextures(){
-    printf("in map textures:\n");
-    std::map<std::string, texture_t>::iterator it;
-    for(it = textures.begin(); it != textures.end(); it++){
-        printf("\t[%s] : location : \"%s\" | "
-                        "width : %d | "
-                        "height : %d\n", it->first.c_str(), it->second.getLocation().c_str(), it->second.getWidth(), it->second.getHeight());
-    }
-}
-
-texture_t game_t::getTexture(std::string path){
-    return textures[path];
-}
-
-texture_t game_t::getTexture(texture_t texture){
-    return textures[texture.getLocation()];
-}
-
-void game_t::addTexture(texture_t texture){
-    textures.insert(std::pair<std::string, texture_t>(texture.getLocation(), texture));
-    printf("added texture at location \"%s\" in textures vector\n", texture.getLocation().c_str());
-}
-
-void game_t::removeTexture(texture_t texture){ 
-    textures.erase(texture.getLocation());
-}
-
 void game_t::free(){
-    //textures
-    std::map<std::string, texture_t>::iterator it;
-    for(it = textures.begin(); it != textures.end(); it++){
-        it->second.free();
-    }
-    
-    TTF_CloseFont(font);
-    font = NULL;
-    
     SDL_DestroyWindow(window);
     SDL_DestroyRenderer(renderer);
     window = NULL;
