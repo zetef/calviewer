@@ -1,3 +1,3 @@
-# kalendar
+# calviewer
 
 the simpler calendar desktop app that tracks days.
