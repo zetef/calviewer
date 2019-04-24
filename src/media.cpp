@@ -30,12 +30,12 @@ bool media_t::load(SDL_Renderer* renderer){
     }
     
     //font
-    hbold = TTF_OpenFont("./res/helvetica-bold.ttf", 20);
+    hbold = TTF_OpenFont("./res/helvetica-bold.ttf", 30);
     if(hbold == NULL){
         printf("failed to load font from file \"%s\". error: %s\n", "./res/helvetica-bold.ttf", TTF_GetError());
         success = false;
     }
-    hlight = TTF_OpenFont("./res/helvetica-light.ttf", 20);
+    hlight = TTF_OpenFont("./res/helvetica-light.ttf", 30);
 	if(hlight == NULL){
         printf("failed to load font from file \"%s\". error: %s\n", "./res/helvetica-light.ttf", TTF_GetError());
         success = false;

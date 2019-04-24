@@ -40,7 +40,7 @@ bool texture_t::loadFromFile(SDL_Renderer* renderer, std::string path){
 }
 
 #ifdef _SDL_TTF_H
-bool texture_t::loadFromRenderedText(std::string textureText, SDL_Color textColor, TTF_Font* font, SDL_Renderer* renderer){
+bool texture_t::loadFromRenderedText(SDL_Renderer* renderer, std::string textureText, SDL_Color textColor, TTF_Font* font){
     free();
 
 	SDL_Surface* textSurface = TTF_RenderText_Solid(font, textureText.c_str(), textColor);

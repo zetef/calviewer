@@ -1,2 +1,2 @@
 in map textures:
-	[FPSText] : location : "FPSText" | width : 0 | height : 0
+	[MonthText] : location : "MonthText" | width : 0 | height : 0
