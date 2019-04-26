@@ -84,7 +84,6 @@ void calendar_t::renderCalendar(SDL_Renderer* renderer, media_t* media){
             media->render(renderer, s, m, n);
         }
     }
-    printf("\n");
 }
 
 void calendar_t::generate(){
