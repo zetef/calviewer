@@ -1,7 +1,8 @@
 #OBJS specifies which files to compile as part of the project
 OBJS = src/main.cpp src/game.cpp \
 	src/state.cpp src/texture.cpp src/timer.cpp \
-	src/media.cpp
+	src/media.cpp src/calendar.cpp src/font.cpp \
+	src/utility.cpp src/day.cpp
 
 #CC specifies which compiler we're using
 CC = g++
@@ -15,13 +16,13 @@ LIBRARY_PATHS = -LC:\dev\SDL2\lib
 #COMPILER_FLAGS specifies the additional compilation options we're using
 # -w suppresses all warnings
 # -Wl,-subsystem,windows gets rid of the console window
-COMPILER_FLAGS = -Wall -Wl,-subsystem,windows
+COMPILER_FLAGS = -Wall 
 
 #LINKER_FLAGS specifies the libraries we're linking against
 LINKER_FLAGS = -lmingw32 -lSDL2main -lSDL2 -lSDL2_image -lSDL2_ttf
 
 #OBJ_NAME specifies the name of our exectuable
-OBJ_NAME = kalendar
+OBJ_NAME = calviewer
 
 #This is the target that compiles our executable
 all : $(OBJS)

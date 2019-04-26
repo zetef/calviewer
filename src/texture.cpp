@@ -39,12 +39,13 @@ bool texture_t::loadFromFile(SDL_Renderer* renderer, std::string path){
     
 }
 
-#ifdef _SDL_TTF_H
-bool texture_t::loadFromRenderedText(SDL_Renderer* renderer, std::string textureText, SDL_Color textColor, TTF_Font* font){
+bool texture_t::loadFromRenderedText(SDL_Renderer* renderer, font_t fnt){
     free();
-
-	SDL_Surface* textSurface = TTF_RenderText_Solid(font, textureText.c_str(), textColor);
-	if(textSurface != NULL){
+    
+    fnt.load();
+    
+	SDL_Surface* textSurface = TTF_RenderText_Solid(fnt.font, fnt.text.c_str(), fnt.color);
+	if(fnt.font != NULL){
 		mTexture = SDL_CreateTextureFromSurface(renderer, textSurface);
 		if(mTexture == NULL){
 			printf("could not create texture from rendered text! error: %s\n", SDL_GetError());
@@ -60,8 +61,6 @@ bool texture_t::loadFromRenderedText(SDL_Renderer* renderer, std::string texture
 
 	return mTexture != NULL;
 }
-
-#endif
 
 void texture_t::setColor(Uint8 red, Uint8 green, Uint8 blue){
 	SDL_SetTextureColorMod(mTexture, red, green, blue);

@@ -2,8 +2,7 @@
 
 media_t::media_t(){
     textures.clear();
-    hbold = NULL;
-    hlight = NULL;
+    fonts.clear();
 }
 
 media_t::~media_t(){
@@ -15,30 +14,30 @@ bool media_t::load(SDL_Renderer* renderer){
     
     //reading from file the textures that need to load
     std::string location, key;
-    texture_t ex;
-    std::ifstream f("./io/textures.in");
-    while(f >> location >> key){
-        if(location != key){
-            if(!ex.loadFromFile(renderer, location)){
-                printf("failed to load image \"%s\"\n\n", ex.getLocation().c_str());
-                success = false;
-            }
+    texture_t texture;
+    std::ifstream tex("./io/textures.in");
+    while(tex >> location >> key){
+        if(!texture.loadFromFile(renderer, location)){
+            printf("failed to load image \"%s\"\n\n", texture.getLocation().c_str());
+            success = false;
+        } else {
+            textures[key] = texture;
         }
-        textures[key] = ex;
-        if(location == key) textures[key].setLocation(key);
-        ex.free();
+        texture.free();
     }
     
-    //font
-    hbold = TTF_OpenFont("./res/helvetica-bold.ttf", 30);
-    if(hbold == NULL){
-        printf("failed to load font from file \"%s\". error: %s\n", "./res/helvetica-bold.ttf", TTF_GetError());
-        success = false;
-    }
-    hlight = TTF_OpenFont("./res/helvetica-light.ttf", 30);
-	if(hlight == NULL){
-        printf("failed to load font from file \"%s\". error: %s\n", "./res/helvetica-light.ttf", TTF_GetError());
-        success = false;
+    font_t fnt;
+    int size;
+    int r, g, b, a;
+    std::string path;
+    std::ifstream fon("./io/fonts.in");
+    while(fon >> key >> size >> path >> r >> g >> b >> a){
+        SDL_Color color = {(Uint8)r, (Uint8)g, (Uint8)b, (Uint8)a};
+        fnt.init(path, size, color);
+        textures[key] = texture;
+        fonts[key] = fnt;
+        texture.free();
+        fnt.free();
     }
     
 	return success;
@@ -59,13 +58,13 @@ void media_t::showTextures(){
 }
 
 void media_t::free(){
-    std::map<std::string, texture_t>::iterator it;
-    for(it = textures.begin(); it != textures.end(); it++){
-        it->second.free();
+    std::map<std::string, texture_t>::iterator itt;
+    for(itt = textures.begin(); itt != textures.end(); itt++){
+        itt->second.free();
     }
     
-    TTF_CloseFont(hbold);
-    TTF_CloseFont(hlight);
-    hbold = NULL;
-    hbold = NULL;
+    std::map<std::string, font_t>::iterator itf;
+    for(itf = fonts.begin(); itf != fonts.end(); itf++){
+        itf->second.free();
+    }
 }

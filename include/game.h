@@ -10,7 +10,6 @@
 #include <string>
 
 #include "constants.h"
-#include "texture.h"
 #include "state.h"
 
 class game_t{

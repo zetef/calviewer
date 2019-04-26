@@ -7,14 +7,14 @@
 #include <iostream>
 #include <string>
 
+#include "font.h"
+
 class texture_t{
     public:
 		texture_t();
 		~texture_t();
 		bool loadFromFile(SDL_Renderer* renderer, std::string path);
-#ifdef _SDL_TTF_H
-        bool loadFromRenderedText(SDL_Renderer* renderer, std::string textureText, SDL_Color textColor, TTF_Font* font);
-#endif
+        bool loadFromRenderedText(SDL_Renderer* renderer, font_t font);
 		
 		void setColor(Uint8 red, Uint8 green, Uint8 blue);
 		void setBlendMode(SDL_BlendMode blending);

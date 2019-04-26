@@ -4,10 +4,12 @@
 #include <fstream>
 #include <string>
 #include <sstream>
+#include <ctime>
 
 #include "../include/game.h"
 #include "../include/timer.h"
 #include "../include/media.h"
+#include "../include/calendar.h"
 
 int main(int argc, char* argv[])
 {
@@ -27,20 +29,16 @@ int main(int argc, char* argv[])
         } else {
             media->showTextures();
             
-            SDL_Color textColor = {0x00, 0x00, 0x00, 0xff};
-            
             timer_t fpsTimer;
             timer_t capTimer;
-            std::stringstream text;
-            text.str("");
-            text << "Apr";
+            std::stringstream month;
+            std::stringstream year;
             
-            media->textures["MonthText"].loadFromRenderedText(game->renderer, text.str(), textColor, media->hbold);
-            unsigned int w = media->textures["MonthText"].getWidth();
-            unsigned int h = media->textures["MonthText"].getWidth();
-            unsigned int offx = w + SCREEN_WIDTH / w;
-            unsigned int offy = h + SCREEN_HEIGHT / h;
-            unsigned int offset = 10;
+            //get date and time
+            std::time_t t = std::time(0);
+            std::tm* now = std::localtime(&t);
+            calendar_t* calendar = new calendar_t(now->tm_mday, now->tm_mon, now->tm_year + 1900);
+            calendar->showCalendar();
             
             unsigned int countedFrames = 0;
             fpsTimer.start();
@@ -49,21 +47,40 @@ int main(int argc, char* argv[])
                 capTimer.start();
                 
                 //handle input
-                game->state.handle();
+                game->state.handle(calendar); //generating the new month only when new input is detected
                 
                 float avgFPS = countedFrames / (fpsTimer.getTicks() / 1000.f);
                 if(avgFPS > 2000000)
                     avgFPS = 0;
                 
-                //rest of the game
+                unsigned int offset = 20;
+                int x = 20;
+                int y = 10;
+                unsigned int x1 = media->textures["MonthText"].getWidth() + x;
+                unsigned int y1 = y;
+                
+                month.str("");
+                year.str("");
+                month << calendar->months[calendar->m];
+                year << calendar->y;
+            
+                media->fonts["MonthText"].text = month.str();
+                media->textures["MonthText"].loadFromRenderedText(game->renderer, media->fonts["MonthText"]);
+            
+                media->fonts["YearText"].text = year.str();
+                media->textures["YearText"].loadFromRenderedText(game->renderer, media->fonts["YearText"]);
+                
+                //rendering
                 SDL_SetRenderDrawColor(game->renderer, 0xff, 0xff, 0xff, 0xff);
                 SDL_RenderClear(game->renderer);
-                SDL_SetRenderDrawColor(game->renderer, 0x00, 0x00, 0x00, 0xff);
-            
-                SDL_RenderDrawLine(game->renderer, 0, SCREEN_HEIGHT / 7, SCREEN_WIDTH, SCREEN_HEIGHT / 7);
-            
                 
-                media->render(game->renderer, "MonthText", offx - offset, offy - offset);
+                SDL_SetRenderDrawColor(game->renderer, 0x00, 0x00, 0x00, 0xff);
+                SDL_RenderDrawLine(game->renderer, offset, SCREEN_HEIGHT / 8, SCREEN_WIDTH - offset, SCREEN_HEIGHT / 8);
+                
+                media->render(game->renderer, "MonthText", x, y);
+                media->render(game->renderer, "YearText", x1, y1);
+                
+                calendar->renderCalendar(game->renderer, media);
                 
                 SDL_RenderPresent(game->renderer);
                 
