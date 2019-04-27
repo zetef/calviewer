@@ -8,5 +8,7 @@ class day_t{
     public:
         day_t();
         int d;
+        int x, y;
+        int w, h;
         bool thisMonth;
 };

@@ -19,22 +19,9 @@ void state_t::handle(calendar_t* calendar){ //TODO take care of overflows
         } else if (event.key.type == SDL_KEYDOWN){
             if (event.key.keysym.sym == SDLK_ESCAPE){
                 quit = true;
-            } else if(event.key.keysym.sym == SDLK_LEFT){
-                if(calendar->m - 1 < 0){
-                    calendar->m = 11;
-                    calendar->y--;
-                } else
-                    calendar->m--;
-                calendar->generate();
-            } else if(event.key.keysym.sym == SDLK_RIGHT){
-                if(calendar->m + 1 > 11){
-                    calendar->m = 0;
-                    calendar->y++;
-                } else 
-                    calendar->m++;
-                calendar->generate();
             }
         }
+        calendar->handleEvent(&event);
     }
 }
 

@@ -15,6 +15,7 @@
 class calendar_t{
     public:
         calendar_t(int dd, int mm, int yy);
+        void handleEvent(SDL_Event* event);
         void generate();
         void showCalendar();
         void renderCalendar(SDL_Renderer* renderer, media_t* media);

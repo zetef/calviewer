@@ -17,6 +17,26 @@ calendar_t::calendar_t(int dd, int mm, int yy){
     generate();
 }   
 
+void calendar_t::handleEvent(SDL_Event* event){
+    if(event->key.type == SDL_KEYDOWN){
+        if(event->key.keysym.sym == SDLK_LEFT){
+            if(m - 1 < 0){
+                m = 11;
+                y--;
+            } else
+                m--;
+            generate();
+        } else if(event->key.keysym.sym == SDLK_RIGHT){
+            if(m + 1 > 11){
+                m = 0;
+                y++;
+            } else 
+                m++;
+            generate();
+        }
+    }
+}
+
 void calendar_t::showCalendar(){
     printf("%s %d\n", months[m].c_str(), y); //the current month followed by the current year
     for(int i = 0; i < COLS; i++) //printing all the days
@@ -81,7 +101,18 @@ void calendar_t::renderCalendar(SDL_Renderer* renderer, media_t* media){
             media->fonts[s].text = day.str();
             media->textures[s].loadFromRenderedText(renderer, media->fonts[s]);
             m = map(j, 0, 6, x1, x2 - w);
+            month[i][j].x = m;
+            month[i][j].y = n;
+            month[i][j].w = media->textures[s].getWidth();
+            month[i][j].h = media->textures[s].getHeight();
+            SDL_Rect rect;
+            rect.x = month[i][j].x;
+            rect.y = month[i][j].y;
+            rect.w = month[i][j].w;
+            rect.h = month[i][j].h;
             media->render(renderer, s, m, n);
+            /*SDL_SetRenderDrawColor(renderer, 0x00, 0x00, 0x00, 0xff);
+            SDL_RenderDrawRect(renderer, &rect);*/
         }
     }
 }
@@ -91,8 +122,9 @@ void calendar_t::generate(){
     int d_temp = getWeekDay(1, m, y); //first day of the month
     d_temp = reverseDay(d_temp);
     
+    printf("%d\n", m);
     int nr = nrDayMonth[m];
-    if(leapYear(y)) //from 28 to 29
+    if(leapYear(y) && m == 1) //from 28 to 29
         nr++;
     
     int k = getFirstWeek(d_temp, m, y, month); //returns the last day of the first week of the month
@@ -144,11 +176,12 @@ bool calendar_t::leapYear(int yy){
 int calendar_t::getFirstWeek(int st, int mnth, int yy, day_t month[6][7]){
     int mnth_temp = mnth;
     if(mnth_temp - 1 < 0)
-        mnth_temp = 12;
-    mnth_temp--;
+        mnth_temp = 11;
+    else
+        mnth_temp--;
     
     int v = nrDayMonth[mnth_temp];
-    if(leapYear(yy))
+    if(leapYear(yy) && mnth_temp == 1) //from 28 to 29
         v++;
     
     int k = 0;
