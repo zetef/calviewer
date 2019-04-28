@@ -25,15 +25,18 @@ void calendar_t::handleEvent(SDL_Event* event){
                 y--;
             } else
                 m--;
-            generate();
         } else if(event->key.keysym.sym == SDLK_RIGHT){
             if(m + 1 > 11){
                 m = 0;
                 y++;
             } else 
                 m++;
-            generate();
+        } else if(event->key.keysym.sym == SDLK_UP){
+            y++;
+        } else if(event->key.keysym.sym == SDLK_DOWN){
+            y--;
         }
+        generate();
     }
 }
 
@@ -64,6 +67,7 @@ void calendar_t::renderCalendar(SDL_Renderer* renderer, media_t* media){
     int k = 0; //week day counte
     int w = 0; //width of last day
     int h = 0;
+    int midp[7];
     
     wDay.str("");
     wDay << days[6];
@@ -79,15 +83,14 @@ void calendar_t::renderCalendar(SDL_Renderer* renderer, media_t* media){
         media->fonts["WeekDayText"].text = wDay.str();
         media->textures["WeekDayText"].loadFromRenderedText(renderer, media->fonts["WeekDayText"]);
         i = map(k, 0, 6, x1, x2 - w);
+        midp[k] = i + media->textures["WeekDayText"].getWidth() / 2;
         media->render(renderer, "WeekDayText", i, y1);
         k++;
     }
     
     y1 = y1 + h + offy;
-    
     int m = 0;
-    int n = y1;
-    
+    int n = y1 + h + offy;
     //rendering the month days
     for(int i = 0; i < 6; i++){
         m = x1;
@@ -100,19 +103,12 @@ void calendar_t::renderCalendar(SDL_Renderer* renderer, media_t* media){
             else                      s += "L";
             media->fonts[s].text = day.str();
             media->textures[s].loadFromRenderedText(renderer, media->fonts[s]);
-            m = map(j, 0, 6, x1, x2 - w);
+            m = midp[j] - media->textures[s].getWidth() / 2;
             month[i][j].x = m;
             month[i][j].y = n;
             month[i][j].w = media->textures[s].getWidth();
             month[i][j].h = media->textures[s].getHeight();
-            SDL_Rect rect;
-            rect.x = month[i][j].x;
-            rect.y = month[i][j].y;
-            rect.w = month[i][j].w;
-            rect.h = month[i][j].h;
             media->render(renderer, s, m, n);
-            /*SDL_SetRenderDrawColor(renderer, 0x00, 0x00, 0x00, 0xff);
-            SDL_RenderDrawRect(renderer, &rect);*/
         }
     }
 }

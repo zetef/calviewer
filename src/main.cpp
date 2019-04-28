@@ -18,7 +18,7 @@ int main(int argc, char* argv[])
     freopen("./io/error.out", "w", stdout);
 #endif
 
-    game_t* game = new game_t("kalendar");
+    game_t* game = new game_t("calviewer");
     media_t* media = new media_t();
     
     if(!game->init()){
@@ -54,10 +54,6 @@ int main(int argc, char* argv[])
                     avgFPS = 0;
                 
                 unsigned int offset = 20;
-                int x = 20;
-                int y = 10;
-                unsigned int x1 = media->textures["MonthText"].getWidth() + x;
-                unsigned int y1 = y;
                 
                 month.str("");
                 year.str("");
@@ -71,11 +67,18 @@ int main(int argc, char* argv[])
                 media->textures["YearText"].loadFromRenderedText(game->renderer, media->fonts["YearText"]);
                 
                 //rendering
-                SDL_SetRenderDrawColor(game->renderer, 0xff, 0xff, 0xff, 0xff);
+                SDL_SetRenderDrawColor(game->renderer, 0xff, 0xff, 220, 0xff);
                 SDL_RenderClear(game->renderer);
                 
                 SDL_SetRenderDrawColor(game->renderer, 0x00, 0x00, 0x00, 0xff);
                 SDL_RenderDrawLine(game->renderer, offset, SCREEN_HEIGHT / 8, SCREEN_WIDTH - offset, SCREEN_HEIGHT / 8);
+                
+                //drawCircle(game->renderer, 100, 100, 100);
+                
+                int x = offset;
+                int y = 10;
+                unsigned int x1 = media->textures["MonthText"].getWidth() + x + 5;
+                unsigned int y1 = y + media->textures["MonthText"].getHeight() - media->textures["YearText"].getHeight();
                 
                 media->render(game->renderer, "MonthText", x, y);
                 media->render(game->renderer, "YearText", x1, y1);
