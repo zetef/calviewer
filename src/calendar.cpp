@@ -1,9 +1,9 @@
 #include "../include/calendar.h"
 
 calendar_t::calendar_t(int dd, int mm, int yy){
-    d = dd;
-    m = mm;
-    y = yy;
+    d = dd, fd = dd;
+    m = mm, fm = mm;
+    y = yy, fy = yy;
     std::string days_temp[] = {"mon", "tue", "wed", "thu", "fri", "sat", "sun"};
     std::string months_temp[] = {"jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"};
     int nrDayMonth_temp[] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
@@ -35,6 +35,10 @@ void calendar_t::handleEvent(SDL_Event* event){
             y++;
         } else if(event->key.keysym.sym == SDLK_DOWN){
             y--;
+        } else if(event->key.keysym.sym == SDLK_RETURN){
+            d = fd;
+            m = fm;
+            y = fy;
         }
         generate();
     }
@@ -71,20 +75,26 @@ void calendar_t::renderCalendar(SDL_Renderer* renderer, media_t* media){
     
     wDay.str("");
     wDay << days[6];
-    media->fonts["WeekDayText"].text = wDay.str();
-    media->textures["WeekDayText"].loadFromRenderedText(renderer, media->fonts["WeekDayText"]);
-    w = media->textures["WeekDayText"].getWidth();
-    h = media->textures["WeekDayText"].getHeight();
+    std::string WeekDayTextName = media->texts["WeekDayText"].name;
+    media->texts[WeekDayTextName].setText(wDay.str());
+    media->texts[WeekDayTextName].loadTexture(renderer);
+    w = media->texts[WeekDayTextName].w;
+    h = media->texts[WeekDayTextName].h;
     
     //first render week days
     for(int i = x1; k < 7;){ // TODO make scalable font DONE!
         wDay.str("");
         wDay << days[k];
-        media->fonts["WeekDayText"].text = wDay.str();
-        media->textures["WeekDayText"].loadFromRenderedText(renderer, media->fonts["WeekDayText"]);
+        media->texts[WeekDayTextName].setText(wDay.str());
+        media->texts[WeekDayTextName].loadTexture(renderer);
+        
+        //scalable text relative to the width of the window
         i = map(k, 0, 6, x1, x2 - w);
-        midp[k] = i + media->textures["WeekDayText"].getWidth() / 2;
-        media->render(renderer, "WeekDayText", i, y1);
+        
+        midp[k] = i + media->texts[WeekDayTextName].w / 2;
+        media->texts[WeekDayTextName].setPosition(i, y1);
+        
+        media->texts[WeekDayTextName].render(renderer);
         k++;
     }
     
@@ -99,16 +109,20 @@ void calendar_t::renderCalendar(SDL_Renderer* renderer, media_t* media){
             day.str("");
             day << month[i][j].d;
             std::string s = "DayText";
-            if(month[i][j].thisMonth) s += "B";
-            else                      s += "L";
-            media->fonts[s].text = day.str();
-            media->textures[s].loadFromRenderedText(renderer, media->fonts[s]);
-            m = midp[j] - media->textures[s].getWidth() / 2;
+            if(month[i][j].thisMonth) s += "Y";
+            else                      s += "N";
+            
+            media->texts[s].setText(day.str());
+            media->texts[s].loadTexture(renderer);
+            
+            m = midp[j] - media->texts[s].w / 2;
+            
             month[i][j].x = m;
             month[i][j].y = n;
-            month[i][j].w = media->textures[s].getWidth();
-            month[i][j].h = media->textures[s].getHeight();
-            media->render(renderer, s, m, n);
+            month[i][j].w = media->texts[s].w;
+            month[i][j].h = media->texts[s].h;
+            media->texts[s].setPosition(m, n);
+            media->texts[s].render(renderer);
         }
     }
 }
@@ -118,7 +132,6 @@ void calendar_t::generate(){
     int d_temp = getWeekDay(1, m, y); //first day of the month
     d_temp = reverseDay(d_temp);
     
-    printf("%d\n", m);
     int nr = nrDayMonth[m];
     if(leapYear(y) && m == 1) //from 28 to 29
         nr++;

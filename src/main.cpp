@@ -14,12 +14,14 @@
 int main(int argc, char* argv[])
 {
 
-#if DEBUG
+/*#if DEBUG
     freopen("./io/error.out", "w", stdout);
-#endif
+#endif*/
 
     game_t* game = new game_t("calviewer");
     media_t* media = new media_t();
+    
+    //printf("hellowww!\n");
     
     if(!game->init()){
         printf("failed to initialize %s. error: %s\n", game->name.c_str(), SDL_GetError());
@@ -27,12 +29,16 @@ int main(int argc, char* argv[])
         if(!media->load(game->renderer)){
             printf("failed to load media. error: %s\n", SDL_GetError());
         } else {
+            //printf("hellowww!\n");
             media->showTextures();
             
+            //printf("hellowww!\n");
             timer_t fpsTimer;
             timer_t capTimer;
             std::stringstream month;
             std::stringstream year;
+            std::string MonthTextName = "MonthText";
+            std::string YearTextName = "YearText";
             
             //get date and time
             std::time_t t = std::time(0);
@@ -59,12 +65,13 @@ int main(int argc, char* argv[])
                 year.str("");
                 month << calendar->months[calendar->m];
                 year << calendar->y;
-            
-                media->fonts["MonthText"].text = month.str();
-                media->textures["MonthText"].loadFromRenderedText(game->renderer, media->fonts["MonthText"]);
-            
-                media->fonts["YearText"].text = year.str();
-                media->textures["YearText"].loadFromRenderedText(game->renderer, media->fonts["YearText"]);
+                
+                media->texts[MonthTextName].setText(month.str());
+                media->texts[MonthTextName].loadTexture(game->renderer);
+                
+                media->texts[YearTextName].setText(year.str());
+                media->texts[YearTextName].loadTexture(game->renderer);
+                
                 
                 //rendering
                 SDL_SetRenderDrawColor(game->renderer, 0xff, 0xff, 220, 0xff);
@@ -77,11 +84,14 @@ int main(int argc, char* argv[])
                 
                 int x = offset;
                 int y = 10;
-                unsigned int x1 = media->textures["MonthText"].getWidth() + x + 5;
-                unsigned int y1 = y + media->textures["MonthText"].getHeight() - media->textures["YearText"].getHeight();
+                unsigned int x1 = media->texts[MonthTextName].w + x + 5;
+                unsigned int y1 = y + media->texts[MonthTextName].h - media->texts[YearTextName].h;
                 
-                media->render(game->renderer, "MonthText", x, y);
-                media->render(game->renderer, "YearText", x1, y1);
+                media->texts[MonthTextName].setPosition(x, y);
+                media->texts[YearTextName].setPosition(x1, y1);
+                
+                media->texts[MonthTextName].render(game->renderer);
+                media->texts[YearTextName].render(game->renderer);
                 
                 calendar->renderCalendar(game->renderer, media);
                 

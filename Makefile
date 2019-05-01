@@ -2,7 +2,7 @@
 OBJS = src/main.cpp src/game.cpp \
 	src/state.cpp src/texture.cpp src/timer.cpp \
 	src/media.cpp src/calendar.cpp src/font.cpp \
-	src/utility.cpp src/day.cpp
+	src/utility.cpp src/day.cpp src/text.cpp
 
 #CC specifies which compiler we're using
 CC = g++

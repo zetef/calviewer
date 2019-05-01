@@ -19,6 +19,7 @@ class font_t{
         void free();
         
         TTF_Font* font;
+        std::string name;
         std::string path;
         int size;
         std::string text;

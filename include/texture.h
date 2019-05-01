@@ -11,7 +11,7 @@
 
 class texture_t{
     public:
-		texture_t();
+        texture_t();
 		~texture_t();
 		bool loadFromFile(SDL_Renderer* renderer, std::string path);
         bool loadFromRenderedText(SDL_Renderer* renderer, font_t font);

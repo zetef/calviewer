@@ -41,7 +41,7 @@ bool texture_t::loadFromFile(SDL_Renderer* renderer, std::string path){
 
 bool texture_t::loadFromRenderedText(SDL_Renderer* renderer, font_t fnt){
     free();
-    
+
     fnt.load();
     
 	SDL_Surface* textSurface = TTF_RenderText_Solid(fnt.font, fnt.text.c_str(), fnt.color);

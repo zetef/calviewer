@@ -1,5 +1,5 @@
 MonthText 50 helvetica-bold.ttf 0 0 0 255
 YearText 30 helvetica-bold.ttf 127 127 127 255
 WeekDayText 30 helvetica-bold.ttf 0 0 0 255
-DayTextB 25 helvetica-bold.ttf 0 0 0 255
-DayTextL 25 helvetica-bold.ttf 158 158 158 255
+DayTextY 25 helvetica-bold.ttf 0 0 0 255
+DayTextN 25 helvetica-bold.ttf 158 158 158 255

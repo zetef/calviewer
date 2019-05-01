@@ -26,18 +26,23 @@ bool media_t::load(SDL_Renderer* renderer){
         texture.free();
     }
     
+    text_t text;
     font_t fnt;
     int size;
     int r, g, b, a;
     std::string path;
-    std::ifstream fon("./io/fonts.in");
-    while(fon >> key >> size >> path >> r >> g >> b >> a){
+    std::ifstream txts("./io/texts.in");
+    while(txts >> key >> size >> path >> r >> g >> b >> a){
         SDL_Color color = {(Uint8)r, (Uint8)g, (Uint8)b, (Uint8)a};
         fnt.init(path, size, color);
-        textures[key] = texture;
-        fonts[key] = fnt;
+        fnt.name = key;
+        text.init(fnt, texture);
+        /*textures[key] = texture;
+        fonts[key] = fnt;*/
+        texts[key] = text;
         texture.free();
         fnt.free();
+        text.free();
     }
     
 	return success;
@@ -48,12 +53,14 @@ void media_t::render(SDL_Renderer* renderer, std::string name, int x, int y, SDL
 }
 
 void media_t::showTextures(){
-    printf("in map textures:\n");
-    std::map<std::string, texture_t>::iterator it;
-    for(it = textures.begin(); it != textures.end(); it++){
-        printf("\t[%s] : location : \"%s\" | "
-                        "width : %d | "
-                        "height : %d\n", it->first.c_str(), it->second.getLocation().c_str(), it->second.getWidth(), it->second.getHeight());
+    if(!textures.empty()){
+        printf("in map textures:\n");
+        std::map<std::string, texture_t>::iterator it;
+        for(it = textures.begin(); it != textures.end(); it++){
+            printf("\t[%s] : location : \"%s\" | "
+                            "width : %d | "
+                            "height : %d\n", it->first.c_str(), it->second.getLocation().c_str(), it->second.getWidth(), it->second.getHeight());
+        }
     }
 }
 

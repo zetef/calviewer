@@ -33,6 +33,8 @@ bool font_t::load(){
 }
 
 void font_t::free(){
-    TTF_CloseFont(font);
-    font = NULL;
+    if(font != NULL){
+        TTF_CloseFont(font);
+        font = NULL;
+    }
 }

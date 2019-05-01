@@ -20,7 +20,9 @@ class calendar_t{
         void showCalendar();
         void renderCalendar(SDL_Renderer* renderer, media_t* media);
         
-        int d, m, y;
+        //initial day, month, year
+        int fd, fm, fy;
+        int d, m, y; //variable day, month, year
         std::string days[7];
         std::string months[12];
         int nrDayMonth[12];
