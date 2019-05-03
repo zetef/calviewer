@@ -45,7 +45,12 @@ bool game_t::init(){
                 }
                 
                 state.init();
-                    
+                
+                SDL_Surface *surface;
+                surface = SDL_LoadBMP("./res/icon.bmp");
+                SDL_SetWindowIcon(window, surface);
+
+                SDL_FreeSurface(surface);
 			}
 		}
 	}

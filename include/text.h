@@ -15,7 +15,11 @@ class text_t{
         ~text_t();
         
         void init(font_t f, texture_t t);
-        void setPosition(int xp, int yp);
+        void setPosition(int xpos, int ypos);
+        void setClip(SDL_Rect* clip); 
+        void setAngle(double a);
+        void setCenter(SDL_Point* point);
+        void setFlip(SDL_RendererFlip f);
         void setText(std::string text);
         void loadTexture(SDL_Renderer* renderer);
         void render(SDL_Renderer* renderer);
@@ -27,5 +31,9 @@ class text_t{
         std::string text;
         int x, y;
         int w, h;
+        SDL_Rect renderQuad;
+        double angle;
+        SDL_Point* center;
+        SDL_RendererFlip flip;
 };
 

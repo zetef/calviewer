@@ -9,6 +9,13 @@ text_t::text_t(){
     y = 0;
     w = 0;
     h = 0;
+    renderQuad.x = x;
+    renderQuad.y = y;
+    renderQuad.w = w;
+    renderQuad.h = h;
+    angle = 0.0f;
+    center = NULL;
+    flip = SDL_FLIP_NONE;
 }
 
 text_t::~text_t(){
@@ -22,9 +29,28 @@ void text_t::init(font_t f, texture_t t){
     text = f.text;
 }
 
-void text_t::setPosition(int xf, int yf){
-    x = xf;
-    y = yf;
+void text_t::setPosition(int xpos, int ypos){
+    x = xpos;
+    y = ypos;
+    renderQuad.x = x;
+    renderQuad.y = y;
+} 
+
+void text_t::setClip(SDL_Rect* clip){
+    renderQuad.w = clip->w;
+    renderQuad.h = clip->h;
+} 
+
+void text_t::setAngle(double a){
+    angle = a;
+}
+
+void text_t::setCenter(SDL_Point* point){
+    center = point;
+}
+
+void text_t::setFlip(SDL_RendererFlip f){
+    flip = f;
 }
 
 void text_t::setText(std::string text){
@@ -32,13 +58,18 @@ void text_t::setText(std::string text){
 }
 
 void text_t::loadTexture(SDL_Renderer* renderer){
-    texture.loadFromRenderedText(renderer, font);
-    w = texture.getWidth();
-    h = texture.getHeight();
+    if(!texture.loadFromRenderedText(renderer, font)){
+        printf("failed to load from rendered text!\n");
+    } else {
+        w = texture.getWidth();
+        h = texture.getHeight();
+        renderQuad.w = w;
+        renderQuad.h = h;
+    }
 }
 
-void text_t::render(SDL_Renderer* renderer){
-    texture.render(renderer, x, y);
+void text_t::render(SDL_Renderer* renderer){ //TODO: work on the clip feature; it doesn't clip correctly; look at the NULL
+    texture.render(renderer, x, y, NULL, angle, center, flip);
 }
 
 void text_t::free(){

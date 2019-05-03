@@ -14,14 +14,12 @@
 int main(int argc, char* argv[])
 {
 
-/*#if DEBUG
+#if DEBUG
     freopen("./io/error.out", "w", stdout);
-#endif*/
+#endif
 
     game_t* game = new game_t("calviewer");
     media_t* media = new media_t();
-    
-    //printf("hellowww!\n");
     
     if(!game->init()){
         printf("failed to initialize %s. error: %s\n", game->name.c_str(), SDL_GetError());
@@ -29,10 +27,8 @@ int main(int argc, char* argv[])
         if(!media->load(game->renderer)){
             printf("failed to load media. error: %s\n", SDL_GetError());
         } else {
-            //printf("hellowww!\n");
             media->showTextures();
             
-            //printf("hellowww!\n");
             timer_t fpsTimer;
             timer_t capTimer;
             std::stringstream month;
@@ -74,13 +70,11 @@ int main(int argc, char* argv[])
                 
                 
                 //rendering
-                SDL_SetRenderDrawColor(game->renderer, 0xff, 0xff, 220, 0xff);
+                SDL_SetRenderDrawColor(game->renderer, 0xff, 0xff, 0xff, 0xff);
                 SDL_RenderClear(game->renderer);
                 
                 SDL_SetRenderDrawColor(game->renderer, 0x00, 0x00, 0x00, 0xff);
                 SDL_RenderDrawLine(game->renderer, offset, SCREEN_HEIGHT / 8, SCREEN_WIDTH - offset, SCREEN_HEIGHT / 8);
-                
-                //drawCircle(game->renderer, 100, 100, 100);
                 
                 int x = offset;
                 int y = 10;

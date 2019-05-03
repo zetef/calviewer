@@ -2,5 +2,6 @@
 
 day_t::day_t(){
     d = 0;
-    thisMonth = 0;
+    hasEvent = false;
+    thisMonth = false;
 }
