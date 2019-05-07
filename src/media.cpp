@@ -1,77 +1,105 @@
-#include "../include/media.h"
+#include "../include/Media.h"
 
-media_t::media_t(){
-    textures.clear();
-    fonts.clear();
+////////////////////////////////
+/// Public Member Functions ////
+////////////////////////////////
+
+Media::Media(){
+	m_textures.clear();
+	//m_fonts.clear();
 }
 
-media_t::~media_t(){
-    free();
+Media::~Media(){
+	free();
 }
 
-bool media_t::load(SDL_Renderer* renderer){
-    bool success = true;
-    
-    //reading from file the textures that need to load
-    std::string location, key;
-    texture_t texture;
-    std::ifstream tex("./io/textures.in");
-    while(tex >> location >> key){
-        if(!texture.loadFromFile(renderer, location)){
-            printf("failed to load image \"%s\"\n\n", texture.getLocation().c_str());
-            success = false;
-        } else {
-            textures[key] = texture;
-        }
-        texture.free();
-    }
-    
-    text_t text;
-    font_t fnt;
-    int size;
-    int r, g, b, a;
-    std::string path;
-    std::ifstream txts("./io/texts.in");
-    while(txts >> key >> size >> path >> r >> g >> b >> a){
-        SDL_Color color = {(Uint8)r, (Uint8)g, (Uint8)b, (Uint8)a};
-        fnt.init(path, size, color);
-        fnt.name = key;
-        text.init(fnt, texture);
-        /*textures[key] = texture;
-        fonts[key] = fnt;*/
-        texts[key] = text;
-        texture.free();
-        fnt.free();
-        text.free();
-    }
-    
+bool Media::load(SDL_Renderer* t_renderer){
+	bool success = true;
+	
+	//reading from file the textures that need to load
+	std::string path, key;
+	Texture texture;
+	std::ifstream tex("./io/textures.in");
+	while(tex >> key >> path){
+		if(!texture.load_from_file(t_renderer, path)){
+			printf("failed to load image \"%s\"\n\n", texture.get_path().c_str());
+			success = false;
+		} else {
+			m_textures[key] = texture;
+		}
+		texture.free();
+	}
+	
+	/*
+	Font font;
+	std::ifstream txts("./io/fonts.in");
+	while(txts >> key >> path){
+		font.set_path(path);
+		//font.load(); //just reading the font path, not interesed in loading it
+		m_fonts[key] = font;
+		//font.free(); //not necessary
+	}
+	*/
+	
 	return success;
 }
 
-void media_t::render(SDL_Renderer* renderer, std::string name, int x, int y, SDL_Rect* clip, double angle, SDL_Point* center, SDL_RendererFlip flip){
-    textures[name].render(renderer, x, y, clip, angle, center, flip);
+void Media::render(SDL_Renderer* t_renderer, std::string t_name, int t_x, int t_y, SDL_Rect* t_clip, double t_angle, SDL_Point* t_center, SDL_RendererFlip t_flip){
+	m_textures[t_name].render(t_renderer, t_x, t_y, t_clip, t_angle, t_center, t_flip);
 }
 
-void media_t::showTextures(){
-    if(!textures.empty()){
-        printf("in map textures:\n");
-        std::map<std::string, texture_t>::iterator it;
-        for(it = textures.begin(); it != textures.end(); it++){
-            printf("\t[%s] : location : \"%s\" | "
-                            "width : %d | "
-                            "height : %d\n", it->first.c_str(), it->second.getLocation().c_str(), it->second.getWidth(), it->second.getHeight());
-        }
-    }
+std::map<std::string, Texture>* Media::get_textures(){
+	return &m_textures;
 }
 
-void media_t::free(){
-    std::map<std::string, texture_t>::iterator itt;
-    for(itt = textures.begin(); itt != textures.end(); itt++){
-        itt->second.free();
-    }
-    
-    std::map<std::string, font_t>::iterator itf;
-    for(itf = fonts.begin(); itf != fonts.end(); itf++){
-        itf->second.free();
-    }
+/*std::map<std::string, Font>* Media::get_fonts(){
+	return &m_fonts;
+}*/
+
+void Media::show_textures(){
+	if(!m_textures.empty()){
+		printf("in map textures:\n");
+		std::map<std::string, Texture>::iterator it_texture;
+		for(it_texture = m_textures.begin(); it_texture != m_textures.end(); it_texture++){
+			printf("\t[%s] : path : \"%s\" | "
+					"width : %d | "
+					"height : %d\n", it_texture->first.c_str(), 
+							it_texture->second.get_path().c_str(), 
+							it_texture->second.get_width(), 
+							it_texture->second.get_height());
+		}
+	}
 }
+
+/*void Media::show_fonts(){
+	if(!m_fonts.empty()){
+		printf("in map fonts:\n");
+		std::map<std::string, Font>::iterator it_font;
+		for(it_font = m_fonts.begin(); it_font != m_fonts.end(); it_font++){
+			printf("\t[%s] : path : \"%s\" | "
+					"size : %d | "
+					"color : r: %d, g: %d, b: %d, a: %d\n", 
+							it_font->first.c_str(), 
+							it_font->second.get_path().c_str(), 
+							it_font->second.get_size(), 
+							it_font->second.get_color().r,
+							it_font->second.get_color().g,
+							it_font->second.get_color().b,
+							it_font->second.get_color().a);
+		}
+	}
+}*/
+
+void Media::free(){
+	std::map<std::string, Texture>::iterator it_texture;
+	for(it_texture = m_textures.begin(); it_texture != m_textures.end(); it_texture++){
+		it_texture->second.free();
+	}
+	
+	/*std::map<std::string, Font>::iterator it_font;
+	for(it_font = m_fonts.begin(); it_font != m_fonts.end(); it_font++){
+		it_font->second.free();
+	}*/
+}
+
+////////////////////////////////

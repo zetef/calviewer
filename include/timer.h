@@ -2,24 +2,50 @@
 
 #include <SDL.h>
 
-class timer_t{
-    public:
-		timer_t();
+class Timer{
+	public:
+		
+		////////////////////////////////
+		/// Public Member Functions ////
+		////////////////////////////////
+		
+		//defaults variables
+		Timer();
 
+		//starts timer
 		void start();
+		
+		//stops timer
 		void stop();
+		
+		//pauses timer
 		void pause();
+		
+		//upauses timer
 		void unpause();
 
-		Uint32 getTicks();
+		//gets ticks
+		Uint32 get_ticks();
 
-		bool isStarted();
-		bool isPaused();
+		//checks if started
+		bool is_started();
+		
+		//check if paused
+		bool is_paused();
+		
+		////////////////////////////////
 
-    private:
-		Uint32 startTicks;
-        Uint32 pausedTicks;
+	private:
+		
+		////////////////////////////////
+		///// Private Member Data //////
+		////////////////////////////////
+		
+		Uint32 m_start_ticks;  //started ticks
+		Uint32 m_paused_ticks; //paused ticks
+		bool   m_paused;       //is the timer paused
+		bool   m_started;      //is the timer started
+		
+		////////////////////////////////
 
-		bool paused;
-		bool started;
 };

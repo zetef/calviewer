@@ -1,40 +1,85 @@
-#include "../include/font.h"
+#include "../include/Font.h"
 
-font_t::font_t(){
-    font = NULL;
-    path = "./";
-    size = 10;
-    text = ".";
-    SDL_Color color_temp = {0x00, 0x00, 0x00, 0xff};
-    assign(color, color_temp);
+////////////////////////////////
+/// Public Member Functions ////
+////////////////////////////////
+
+Font::Font(){
+	m_font = NULL;
+	m_path = "./";
+	m_size = 10;
+	m_color.r = 0;
+	m_color.g = 0;
+	m_color.b = 0;
+	m_color.a = 255;
 }
 
-font_t::~font_t(){
-    free();
+Font::~Font(){
+	free();
 }
 
-void font_t::init(std::string p, int s, SDL_Color c){
-    path = p;
-    size = s;
-    color = c;
+void Font::init(std::string t_path, int t_size, SDL_Color t_color){
+	m_path = t_path;
+	m_size = t_size;
+	m_color = t_color;
 }
 
-bool font_t::load(){
-    bool success = true;
-    
-    std::string s = "./res/" + path;
-    font = TTF_OpenFont(s.c_str(), size);
-    if(font == NULL){
-        printf("failed to load font from file \"%s\". error: %s\n", s.c_str(), TTF_GetError());
-        success = false;
-    }
-    
-    return success;
+void Font::set_path(std::string t_path){
+	m_path = t_path;
 }
 
-void font_t::free(){
-    if(font != NULL){
-        TTF_CloseFont(font);
-        font = NULL;
-    }
+void Font::set_size(int t_size){
+	m_size = t_size;
 }
+
+void Font::set_color(SDL_Color t_color){
+	m_color = t_color;
+}
+
+TTF_Font* Font::get_font(){
+	return m_font;
+}
+
+std::string Font::get_path(){
+	return m_path;
+}
+
+int Font::get_size(){
+	return m_size;
+}
+
+SDL_Color Font::get_color(){
+	return m_color;
+}
+
+bool Font::is_null(){
+	return m_font == NULL;
+}
+
+bool Font::load(){
+	bool success = true;
+
+	std::string path = "./res/fonts/" + m_path;
+	m_font = TTF_OpenFont(path.c_str(), m_size);
+	if(m_font == NULL){
+		printf("failed to load font from file \"%s\". error: %s\n", path.c_str(), TTF_GetError());
+		success = false;
+	}
+
+	return success;
+}
+
+void Font::free(){
+	if(m_font != NULL){
+		TTF_CloseFont(m_font);
+		m_font = NULL;
+		m_path = "./";
+		m_size = 0;
+		m_color.r = 0;
+		m_color.g = 0;
+		m_color.b = 0;
+		m_color.a = 255;
+	}
+}
+
+////////////////////////////////

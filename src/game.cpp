@@ -1,72 +1,92 @@
-#include "../include/game.h"
+#include "../include/Game.h"
 
-game_t::game_t(std::string title){
-    window = NULL;
-    renderer = NULL;
-    name = title;
+////////////////////////////////
+/// Public Member Functions ////
+////////////////////////////////
+
+Game::Game(std::string t_title){
+    m_window = NULL;
+    m_renderer = NULL;
+    m_title = t_title;
 }
 
-game_t::~game_t(){
+Game::~Game(){
     free();
 }
 
-bool game_t::init(){
+bool Game::init(){
     bool success = true;
 
 	if(SDL_Init(SDL_INIT_VIDEO) < 0){
-		printf("could not initialize sdl! rrror: %s\n", SDL_GetError());
+		printf("could not initialize sdl! error: %s\n", SDL_GetError());
 		success = false;
 	} else {
 		if(!SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1")){
 			printf("warning: Linear texture filtering not enabled!\n");
 		}
 
-		window = SDL_CreateWindow(name.c_str(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
-		if(window == NULL){
+		m_window = SDL_CreateWindow(m_title.c_str(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 
+							   SCREEN_WIDTH		  , SCREEN_HEIGHT          , SDL_WINDOW_SHOWN        );
+		if(m_window == NULL){
 			printf("could not create window! error: %s\n", SDL_GetError());
 			success = false;
 		} else {
-			renderer = SDL_CreateRenderer(window, DEFAULT_DRIVER, SDL_RENDERER_ACCELERATED);
-			if(renderer == NULL){
+			m_renderer = SDL_CreateRenderer(m_window, DEFAULT_DRIVER, SDL_RENDERER_ACCELERATED);
+			if(m_renderer == NULL){
 				printf("could not create renderer! error: %s\n", SDL_GetError());
 				success = false;
 			} else {
-				SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
+				SDL_SetRenderDrawColor(m_renderer, 0xFF, 0xFF, 0xFF, 0xFF);
 
-				int imgFlags = IMG_INIT_PNG;
-				if(!( IMG_Init(imgFlags) & imgFlags)){
+				int img_flags = IMG_INIT_PNG;
+				if(!( IMG_Init(img_flags) & img_flags)){
 					printf("could not initialize SDL_image! error: %s\n\n", IMG_GetError());
 					success = false;
-                }
+                
+				}
+			}
+		}
                 
                 if(TTF_Init() == -1){
                     printf("could not initialize SDL_ttf! error: %s\n", TTF_GetError());
                     success = false;
                 }
                 
-                state.init();
+                m_state.init();
                 
-                SDL_Surface *surface;
-                surface = SDL_LoadBMP("./res/icon.bmp");
-                SDL_SetWindowIcon(window, surface);
+                SDL_Surface *icon;
+                icon = SDL_LoadBMP("./res/icon.bmp");
+                SDL_SetWindowIcon(m_window, icon);
 
-                SDL_FreeSurface(surface);
-			}
-		}
+                SDL_FreeSurface(icon);
 	}
 
 	return success;
 }
 
-void game_t::free(){
-    SDL_DestroyWindow(window);
-    SDL_DestroyRenderer(renderer);
-    window = NULL;
-    renderer = NULL;
+SDL_Renderer* Game::get_renderer(){
+	return m_renderer;
+}
+
+State* Game::get_state(){
+	return &m_state;
+}
+
+std::string Game::get_title(){
+	return m_title;
+}
+
+void Game::free(){
+    SDL_DestroyWindow(m_window);
+    SDL_DestroyRenderer(m_renderer);
+    m_window = NULL;
+    m_renderer = NULL;
     
-    state.free();
+    m_state.free();
     
     TTF_Quit();
     IMG_Quit();
     SDL_Quit();
 }
+
+////////////////////////////////

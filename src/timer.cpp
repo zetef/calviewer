@@ -1,65 +1,71 @@
-#include "../include/timer.h"
+#include "../include/Timer.h"
 
-timer_t::timer_t(){
-    startTicks = 0;
-    pausedTicks = 0;
+////////////////////////////////
+/// Public Member Functions ////
+////////////////////////////////
+
+Timer::Timer(){
+    m_start_ticks = 0;
+    m_paused_ticks = 0;
     
-    paused = false;
-    started = false;
+    m_paused = false;
+    m_started = false;
 }
 
-void timer_t::start(){
-    started = true;
-    paused = false;
+void Timer::start(){
+    m_started = true;
+    m_paused = false;
     
-    startTicks = SDL_GetTicks();
-    pausedTicks = 0;
+    m_start_ticks = SDL_GetTicks();
+    m_paused_ticks = 0;
 }
 
-void timer_t::stop(){
-    started = false;
-    paused = false;
+void Timer::stop(){
+    m_started = false;
+    m_paused = false;
     
-    startTicks = 0;
-    pausedTicks = 0;
+    m_start_ticks = 0;
+    m_paused_ticks = 0;
 }
 
-void timer_t::pause(){
-    if(started && !paused){
-        paused = true;
+void Timer::pause(){
+    if(m_started && !m_paused){
+        m_paused = true;
         
-        pausedTicks = SDL_GetTicks() - startTicks;
-        startTicks = 0;
+        m_paused_ticks = SDL_GetTicks() - m_start_ticks;
+        m_start_ticks = 0;
     }
 }
 
-void timer_t::unpause(){
-    if(started && paused){
-        paused = false;
+void Timer::unpause(){
+    if(m_started && m_paused){
+        m_paused = false;
         
-        startTicks = SDL_GetTicks() - pausedTicks;
-        pausedTicks = 0;
+        m_start_ticks = SDL_GetTicks() - m_paused_ticks;
+        m_paused_ticks = 0;
     }
 }
 
-Uint32 timer_t::getTicks(){
+Uint32 Timer::get_ticks(){
     Uint32 time = 0;
     
-    if(started){
-        if(paused){
-            time = pausedTicks;
+    if(m_started){
+        if(m_paused){
+            time = m_paused_ticks;
         } else {
-            time = SDL_GetTicks() - startTicks;
+            time = SDL_GetTicks() - m_start_ticks;
         }
     }
     
     return time;
 }
 
-bool timer_t::isStarted(){
-    return started;
+bool Timer::is_started(){
+    return m_started;
 }
 
-bool timer_t::isPaused(){
-    return paused && started;
+bool Timer::is_paused(){
+    return m_paused && m_started;
 }
+
+////////////////////////////////

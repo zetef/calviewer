@@ -7,31 +7,64 @@
 #include <iostream>
 #include <string>
 
-#include "font.h"
+#include "Font.h"
 
-class texture_t{
-    public:
-        texture_t();
-		~texture_t();
-		bool loadFromFile(SDL_Renderer* renderer, std::string path);
-        bool loadFromRenderedText(SDL_Renderer* renderer, font_t font);
-		
-		void setColor(Uint8 red, Uint8 green, Uint8 blue);
-		void setBlendMode(SDL_BlendMode blending);
-		void setAlpha(Uint8 alpha);
-		void render(SDL_Renderer* renderer, int x, int y, SDL_Rect* clip = NULL, double angle = 0.0, SDL_Point* center = NULL, SDL_RendererFlip flip = SDL_FLIP_NONE);
-		int getWidth();
-		int getHeight();
-        void setLocation(std::string path);
-        std::string getLocation();
-        
-        void free();
+class Texture{
+	public:
+
+		////////////////////////////////
+		/// Public Member Functions ////
+		////////////////////////////////
+
+		//constructor defaults all variables
+		Texture();
+
+		//frees the texture it uses if not NULL
+		~Texture();
+
+		//loads from file texture
+		bool load_from_file(SDL_Renderer* t_renderer, std::string t_path);
+
+		//loads text from a font
+		bool load_from_rendered_text(SDL_Renderer* t_renderer, Font* t_font, std::string t_text);
+
+		//sets the tone of the texture (color modulation)
+		void set_color(Uint8 t_red, Uint8 t_green, Uint8 t_blue);
+
+		//sets blend mode of the texture
+		void set_blend_mode(SDL_BlendMode t_blending);
+
+		//sets the alpha of the texture
+		void set_alpha(Uint8 t_alpha);
+
+		//renders the texture with the following properties
+		void render(SDL_Renderer* t_renderer, int t_x, int t_y, SDL_Rect* t_clip = NULL, double t_angle = 0.0, SDL_Point* t_center = NULL, SDL_RendererFlip t_flip = SDL_FLIP_NONE);
+
+		//returns the width of the texture
+		int get_width();
+
+		//returns the height of the texture
+		int get_height();
+
+		//returns the path of the image file loaded into the texture
+		std::string get_path();
+
+		//frees allocated memory for SDL_Texture*
+		void free();
+
+		////////////////////////////////
 
 	private:
-		SDL_Texture* mTexture;
 
-        std::string location;
-		int width;
-		int height;
-    
+		////////////////////////////////
+		///// Private Member Data //////
+		////////////////////////////////
+
+		SDL_Texture* m_texture; //the texture itself
+		std::string  m_path;    //the path of the image that is loaded(if any, texture can be used for Text class)
+		int          m_width;   //the width of the texture
+		int          m_height;  //the height of the texture
+
+		////////////////////////////////
+
 };

@@ -11,51 +11,51 @@ unsigned int nr_zile[] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
 unsigned int luna_t[6][7];
 
 unsigned int reverseday(unsigned int a){
-    unsigned int b = a;
-    if(b == 0)
-        b = 7;
-    b--;
-    return b;
+	unsigned int b = a;
+	if(b == 0)
+		b = 7;
+	b--;
+	return b;
 }
 
 unsigned int getweekday(int dd, int mm, int yy){
-    std::tm time_in = {0, 0, 0, dd, mm, yy - 1900};
-    std::time_t time_temp = std::mktime(&time_in);
-    const std::tm* time_out = std::localtime(&time_temp);
-    
-    return time_out->tm_wday;
+	std::tm time_in = {0, 0, 0, dd, mm, yy - 1900};
+	std::time_t time_temp = std::mktime(&time_in);
+	const std::tm* time_out = std::localtime(&time_temp);
+	
+	return time_out->tm_wday;
 }
 
 bool leapyear(unsigned int year){
-    if(year % 4 == 0)
-        if(year % 100 == 0)
-            if(year % 400 == 0) return true;
-            else return false;
-        else return true;
-    else return false;
+	if(year % 4 == 0)
+		if(year % 100 == 0)
+			if(year % 400 == 0) return true;
+			else return false;
+		else return true;
+	else return false;
     
 }
 
 unsigned int getprimsapt(unsigned int st, int ln, int an, unsigned int month[6][7]){
-    if(ln - 1 < 0)
-        ln = 12;
-    ln--;
-    unsigned int v = nr_zile[ln];
-    if(leapyear(an))
-        v++;
-    
-    unsigned int k = 0;
-    for(int i = st - 1; i >= 0; i--){ //daca e unsigned face overflow si inca e mai mare decat 0
-        month[0][i] = v;//, g << month[0][i] << ' ';
-        v--;
-    }
-    for(unsigned int i = st; i < 7; i++){
-        k++;
-        month[0][i] = k;
-        //g << month[0][i] << ' ';
-    }
-    //g << '\n'
-    return k;
+	if(ln - 1 < 0)
+		ln = 12;
+	ln--;
+	unsigned int v = nr_zile[ln];
+	if(leapyear(an) && ln == 1)
+		v++;
+	
+	unsigned int k = 0;
+	for(int i = st - 1; i >= 0; i--){ //daca e unsigned face overflow si inca e mai mare decat 0
+		month[0][i] = v;//, g << month[0][i] << ' ';
+		v--;
+	}
+	for(unsigned int i = st; i < 7; i++){
+		k++;
+		month[0][i] = k;
+		//g << month[0][i] << ' ';
+	}
+	//g << '\n'
+	return k;
 }
 
 int main()
@@ -71,7 +71,7 @@ int main()
     zi_t = reverseday(zi_t);
     
     unsigned int nr = nr_zile[luna];
-    if(leapyear(an))
+    if(leapyear(an) && luna == 1)
         nr++;
     
     unsigned int k = getprimsapt(zi_a, luna, an, luna_t);
