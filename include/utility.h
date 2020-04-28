@@ -1,8 +1,8 @@
 #pragma once
 
+#include <SDL2/SDL.h>
 #include <cstdlib>
 #include <string>
-#include <SDL.h>
 
 void assign(std::string a[], std::string b[], int n); //TODO use template. not used yet because errors
 void assign(int a[], int b[], int n);

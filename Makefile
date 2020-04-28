@@ -1,30 +1,30 @@
-#OBJS specifies which files to compile as part of the project
-OBJS = src/main.cpp src/Calendar.cpp \
+PROJECT=calviewer
+TYPE=cpp
+
+CC=gcc
+CXX=g++
+RM=rm -f
+CPPFLAGS=-g -Wall -Wextra -Wshadow -pedantic -O3 -Wunreachable-code -Wmain #flags for C and C++
+LDFLAGS=-g -s
+LDLIBS= -lSDL2 -lSDL2_image -lSDL2_ttf # insert here all libraries needed
+
+
+SRCS= src/main.cpp src/Calendar.cpp \
 	src/Date.cpp src/Event.cpp src/Font.cpp \
 	src/Game.cpp src/Media.cpp src/State.cpp \
 	src/Text.cpp src/Texture.cpp src/Timer.cpp \
 	src/utility.cpp
+OBJS=$(subst .$(TYPE),.o,$(SRCS))
 
-#CC specifies which compiler we're using
-CC = g++
+all : $(PROJECT)
 
-#INCLUDE_PATHS specifies the additional include paths we'll need
-INCLUDE_PATHS = -IC:\dev\SDL2\include\SDL2
+$(PROJECT): $(OBJS)
+	$(CXX) $(LDFLAGS) -o $(PROJECT) $(OBJS) $(LDLIBS)
 
-#LIBRARY_PATHS specifies the additional library paths we'll need
-LIBRARY_PATHS = -LC:\dev\SDL2\lib
+$(PROJECT).o: $(PROJECT).$(TYPE)
 
-#COMPILER_FLAGS specifies the additional compilation options we're using
-# -w suppresses all warnings
-# -Wl,-subsystem,windows gets rid of the console window
-COMPILER_FLAGS = -Wall -Wl,-subsystem,windows
+clean:
+	$(RM) $(OBJS)
 
-#LINKER_FLAGS specifies the libraries we're linking against
-LINKER_FLAGS = -lmingw32 -lSDL2main -lSDL2 -lSDL2_image -lSDL2_ttf
-
-#OBJ_NAME specifies the name of our exectuable
-OBJ_NAME = calviewer
-
-#This is the target that compiles our executable
-all : $(OBJS)
-	$(CC) $(OBJS) $(INCLUDE_PATHS) $(LIBRARY_PATHS) $(COMPILER_FLAGS) $(LINKER_FLAGS) -o $(OBJ_NAME)
+disclean: clean
+	$(RM) $(PROJECT)
